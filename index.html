@@ -1,942 +1,1103 @@
 <!DOCTYPE html>
 <html lang="mn">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MBTI Судлаач</title>
-  <meta name="description" content="Нэг файлд бүх зүйл: MBTI тест, динамик график, 16 төрлийн тайлбар, хуваалцах ба хэвлэх — маш хурдан, нууцлалтай." />
-</head>
-<body>
-  <style>
-    *,*::before,
-*::after {
-  box-sizing: border-box;
-}
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
-    Cantarell, Noto Sans, sans-serif;
-  line-height: 1.55;
-}
-img,
-svg {
-  display: block;
-  max-width: 100%;
-}
-button,
-input,
-select {
-  font: inherit;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MBTI Судлаач</title>
+    <meta
+      name="description"
+      content="Нэг файлд бүх зүйл: MBTI тест, динамик график, 16 төрлийн тайлбар, хуваалцах ба хэвлэх — маш хурдан, нууцлалтай."
+    />
+  </head>
+  <body>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          Cantarell, Noto Sans, sans-serif;
+        line-height: 1.55;
+      }
+      img,
+      svg {
+        display: block;
+        max-width: 100%;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
 
-/* ===== THEME ===== */
-:root {
-  --bg: #0b1020;
-  --bg-soft: #0e1430;
-  --surface: rgba(255, 255, 255, 0.06);
-  --text: #f4f7ff;
-  --muted: #b7c1e1;
-  --brand: #6aa4ff;
-  --brand-2: #9b7bff;
-  --ok: #35d69a;
-  --warn: #ffb545;
-  --bad: #ff6b6b;
-  --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-  --radius: 20px;
-}
-.light {
-  --bg: #f6f7fb;
-  --bg-soft: #eef1fb;
-  --surface: rgba(0, 0, 0, 0.05);
-  --text: #0f1330;
-  --muted: #4b5379;
-  --brand: #3b7cff;
-  --brand-2: #7f63ff;
-  --shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
-}
+      /* ===== THEME ===== */
+      :root {
+        --bg: #0b1020;
+        --bg-soft: #0e1430;
+        --surface: rgba(255, 255, 255, 0.06);
+        --text: #f4f7ff;
+        --muted: #b7c1e1;
+        --brand: #6aa4ff;
+        --brand-2: #9b7bff;
+        --ok: #35d69a;
+        --warn: #ffb545;
+        --bad: #ff6b6b;
+        --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+        --radius: 20px;
+      }
+      .light {
+        --bg: #f6f7fb;
+        --bg-soft: #eef1fb;
+        --surface: rgba(0, 0, 0, 0.05);
+        --text: #0f1330;
+        --muted: #4b5379;
+        --brand: #3b7cff;
+        --brand-2: #7f63ff;
+        --shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+      }
 
-body {
-  background: radial-gradient(
-      1300px 600px at 10% -10%,
-      rgba(106, 164, 255, 0.22),
-      transparent 60%
-    ),
-    radial-gradient(
-      800px 400px at 90% 10%,
-      rgba(155, 123, 255, 0.22),
-      transparent 60%
-    ),
-    linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
-  color: var(--text);
-  overflow-x: hidden;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-}
+      body {
+        background: radial-gradient(
+            1300px 600px at 10% -10%,
+            rgba(106, 164, 255, 0.22),
+            transparent 60%
+          ),
+          radial-gradient(
+            800px 400px at 90% 10%,
+            rgba(155, 123, 255, 0.22),
+            transparent 60%
+          ),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+        color: var(--text);
+        overflow-x: hidden;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
 
-/* Animated gradient mist */
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  inset: -20vmax;
-  z-index: -1;
-  filter: blur(60px);
-  opacity: 0.6;
-  pointer-events: none;
-  background: conic-gradient(
-    from 180deg,
-    rgba(106, 164, 255, 0.25),
-    rgba(155, 123, 255, 0.25),
-    rgba(106, 164, 255, 0.25)
-  );
-  animation: swirl 22s linear infinite;
-}
-body::after {
-  animation-duration: 34s;
-  mix-blend-mode: screen;
-  opacity: 0.4;
-}
-@keyframes swirl {
-  from {
-    transform: rotate(0deg) scale(1.05);
-  }
-  to {
-    transform: rotate(360deg) scale(1.05);
-  }
-}
+      /* Animated gradient mist */
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -20vmax;
+        z-index: -1;
+        filter: blur(60px);
+        opacity: 0.6;
+        pointer-events: none;
+        background: conic-gradient(
+          from 180deg,
+          rgba(106, 164, 255, 0.25),
+          rgba(155, 123, 255, 0.25),
+          rgba(106, 164, 255, 0.25)
+        );
+        animation: swirl 22s linear infinite;
+      }
+      body::after {
+        animation-duration: 34s;
+        mix-blend-mode: screen;
+        opacity: 0.4;
+      }
+      @keyframes swirl {
+        from {
+          transform: rotate(0deg) scale(1.05);
+        }
+        to {
+          transform: rotate(360deg) scale(1.05);
+        }
+      }
 
-/* ===== LAYOUT ===== */
-header {
-  position: fixed;
-  width: 100%;
-  background-color: #0e143075;; 
-  top: 0;
-  left: 0;
-  z-index: 50;
+      /* ===== LAYOUT ===== */
+      header {
+        position: fixed;
+        width: 100%;
+        background-color: #0e143075;
+        top: 0;
+        left: 0;
+        z-index: 50;
+      }
+      .container {
+        max-width: 1100px;
+        margin-inline: auto;
+        padding: 1rem clamp(1rem, 3vw, 2rem);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        justify-content: space-between;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+        cursor: pointer;
+      }
+      .brand .logo {
+        width: 28px;
+        height: 28px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, var(--brand), var(--brand-2));
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+        animation: popIn 0.6s ease both;
+      }
+      @keyframes popIn {
+        from {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
 
-}
-.container {
-  max-width: 1100px;
-  margin-inline: auto;
-  padding: 1rem clamp(1rem, 3vw, 2rem);
-}
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  justify-content: space-between;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-weight: 800;
-  letter-spacing: 0.2px;
-  cursor: pointer;
-}
-.brand .logo {
-  width: 28px;
-  height: 28px;
-  border-radius: 9px;
-  background: linear-gradient(135deg, var(--brand), var(--brand-2));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
-  animation: popIn 0.6s ease both;
-}
-@keyframes popIn {
-  from {
-    transform: scale(0.6);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
+      .nav a {
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 700;
+        padding: 0.5rem 0.75rem;
+        border-radius: 12px;
+        transition: transform 0.12s ease, background 0.2s ease;
+      }
+      .nav a:hover {
+        background: var(--surface);
+        color: var(--text);
+        transform: translateY(-2px);
+      }
 
-.nav a {
-  color: var(--muted);
-  text-decoration: none;
-  font-weight: 700;
-  padding: 0.5rem 0.75rem;
-  border-radius: 12px;
-  transition: transform 0.12s ease, background 0.2s ease;
-}
-.nav a:hover {
-  background: var(--surface);
-  color: var(--text);
-  transform: translateY(-2px);
-}
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .btn,
+      button[role="button"] {
+        border: none;
+        background: linear-gradient(135deg, var(--brand), var(--brand-2));
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 800;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+        transform: translateZ(0);
+      }
+      .btn.ghost {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        box-shadow: none;
+      }
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
 
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.btn,
-button[role="button"] {
-  border: none;
-  background: linear-gradient(135deg, var(--brand), var(--brand-2));
-  color: white;
-  padding: 0.75rem 1rem;
-  border-radius: 999px;
-  cursor: pointer;
-  font-weight: 800;
-  box-shadow: var(--shadow);
-  position: relative;
-  overflow: hidden;
-  transform: translateZ(0);
-}
-.btn.ghost {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: none;
-}
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-.btn:active {
-  transform: translateY(1px);
-}
+      /* Ripple micro-interaction */
+      .btn::after {
+        content: "";
+        position: absolute;
+        inset: auto auto 50% 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.35);
+        transform: translate(-50%, -50%);
+        opacity: 0;
+      }
+      .btn.rippling::after {
+        animation: ripple 0.6s ease;
+      }
+      @keyframes ripple {
+        from {
+          width: 0;
+          height: 0;
+          opacity: 0.6;
+        }
+        to {
+          width: 420px;
+          height: 420px;
+          opacity: 0;
+        }
+      }
 
-/* Ripple micro-interaction */
-.btn::after {
-  content: "";
-  position: absolute;
-  inset: auto auto 50% 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  transform: translate(-50%, -50%);
-  opacity: 0;
-}
-.btn.rippling::after {
-  animation: ripple 0.6s ease;
-}
-@keyframes ripple {
-  from {
-    width: 0;
-    height: 0;
-    opacity: 0.6;
-  }
-  to {
-    width: 420px;
-    height: 420px;
-    opacity: 0;
-  }
-}
+      main {
+        display: grid;
+        gap: 2rem;
+      }
+      .hero {
+        margin-top: 100px;
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: clamp(1rem, 3vw, 2rem);
+        align-items: center;
+      }
+      .card {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.06),
+          rgba(255, 255, 255, 0.03)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .p-lg {
+        padding: clamp(1rem, 3vw, 2rem);
+      }
+      .p-md {
+        padding: 1rem;
+      }
+      .title {
+        font-size: clamp(1.9rem, 3vw, 2.6rem);
+        margin: 0 0 0.5rem;
+      }
+      .subtitle {
+        color: var(--muted);
+        font-weight: 600;
+        margin: 0 0 1rem;
+      }
 
-main {
-  display: grid;
-  gap: 2rem;
-}
-.hero {
-  margin-top: 100px;
-}
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: clamp(1rem, 3vw, 2rem);
-  align-items: center;
-}
-.card {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.03)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-}
-.p-lg {
-  padding: clamp(1rem, 3vw, 2rem);
-}
-.p-md {
-  padding: 1rem;
-}
-.title {
-  font-size: clamp(1.9rem, 3vw, 2.6rem);
-  margin: 0 0 0.5rem;
-}
-.subtitle {
-  color: var(--muted);
-  font-weight: 600;
-  margin: 0 0 1rem;
-}
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      }
+      .feature {
+        padding: 1rem;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px dashed rgba(255, 255, 255, 0.15);
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+      .feature:hover {
+        transform: translateY(-3px) scale(1.01);
+        background: rgba(255, 255, 255, 0.07);
+      }
 
-.features {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-}
-.feature {
-  padding: 1rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px dashed rgba(255, 255, 255, 0.15);
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-.feature:hover {
-  transform: translateY(-3px) scale(1.01);
-  background: rgba(255, 255, 255, 0.07);
-}
+      .section {
+        scroll-margin-top: 80px;
+      }
 
-.section {
-  scroll-margin-top: 80px;
-}
+      .grid {
+        display: grid;
+        gap: 1rem;
+      }
+      .grid.cols-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .grid.cols-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .grid.cols-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
 
-.grid {
-  display: grid;
-  gap: 1rem;
-}
-.grid.cols-2 {
-  grid-template-columns: repeat(2, 1fr);
-}
-.grid.cols-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-.grid.cols-4 {
-  grid-template-columns: repeat(4, 1fr);
-}
+      @media (max-width: 900px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+        .features,
+        .grid.cols-2,
+        .grid.cols-3,
+        .grid.cols-4 {
+          grid-template-columns: 1fr;
+        }
+      }
 
-@media (max-width: 900px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-  }
-  .features,
-  .grid.cols-2,
-  .grid.cols-3,
-  .grid.cols-4 {
-    grid-template-columns: 1fr;
-  }
-}
+      @media (max-width: 768px) {
+        .container {
+          padding: 0.5rem;
+        }
+        .nav {
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+        .brand {
+          font-size: 0.9rem;
+        }
+        .title {
+          font-size: 1.5rem;
+        }
+        .subtitle {
+          font-size: 0.9rem;
+        }
+        .features {
+          gap: 0.5rem;
+        }
+        .feature {
+          padding: 0.75rem;
+          font-size: 0.9rem;
+        }
+        .scale {
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.25rem;
+        }
+        .pill {
+          padding: 0.5rem 0.25rem;
+          font-size: 0.75rem;
+        }
+        .quiz-controls {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 1rem;
+        }
+        .quiz-controls .left,
+        .quiz-controls .right {
+          justify-content: center;
+        }
+        .result-header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .bars {
+          gap: 0.75rem;
+        }
+        .bar {
+          height: 16px;
+        }
+        .type-card {
+          padding: 0.75rem;
+        }
+      }
 
-/* ===== REVEAL ANIMATIONS ===== */
-.reveal {
-  opacity: 0;
-  transform: translateY(12px) scale(0.98);
-  transition: opacity 0.6s ease;
-}
-.in-view {
-  opacity: 1 !important;
-  transform: none !important;
-}
+      /* ===== REVEAL ANIMATIONS ===== */
+      .reveal {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+        transition: opacity 0.6s ease;
+      }
+      .in-view {
+        opacity: 1 !important;
+        transform: none !important;
+      }
 
-/* ===== QUIZ ===== */
-.quiz-progress {
-  height: 10px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
-  overflow: hidden;
-}
-.quiz-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--brand), var(--brand-2));
-  width: 0%;
-  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.question {
-  font-weight: 900;
-  margin-bottom: 0.25rem;
-}
-.scale {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.5rem;
-  align-items: center;
-  margin-top: 0.75rem;
-}
-.scale input {
-  display: none;
-}
-.pill {
-  padding: 0.65rem 0.5rem;
-  text-align: center;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  cursor: pointer;
-  user-select: none;
-  font-weight: 800;
-  transition: transform 0.06s linear, background 0.15s ease, border 0.15s ease;
-}
-.pill:hover {
-  outline: 2px solid rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-}
-.scale input:checked + .pill {
-  background: linear-gradient(135deg, var(--brand), var(--brand-2));
-  color: white;
-  border-color: transparent;
-  box-shadow: var(--shadow);
-  animation: pulse 0.4s ease;
-}
-@keyframes pulse {
-  from {
-    transform: scale(0.98);
-  }
-  50% {
-    transform: scale(1.02);
-  }
-  to {
-    transform: scale(1);
-  }
-}
-.pill.small {
-  font-size: 0.8rem;
-  font-weight: 900;
-  opacity: 0.85;
-}
+      /* ===== QUIZ ===== */
+      .quiz-progress {
+        height: 10px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .quiz-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--brand), var(--brand-2));
+        width: 0%;
+        transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .question {
+        font-weight: 900;
+        margin-bottom: 0.25rem;
+      }
+      .scale {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.5rem;
+        align-items: center;
+        margin-top: 0.75rem;
+      }
+      .scale input {
+        display: none;
+      }
+      .pill {
+        padding: 0.65rem 0.5rem;
+        text-align: center;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        cursor: pointer;
+        user-select: none;
+        font-weight: 800;
+        transition: transform 0.06s linear, background 0.15s ease,
+          border 0.15s ease;
+      }
+      .pill:hover {
+        outline: 2px solid rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+      }
+      .scale input:checked + .pill {
+        background: linear-gradient(135deg, var(--brand), var(--brand-2));
+        color: white;
+        border-color: transparent;
+        box-shadow: var(--shadow);
+        animation: pulse 0.4s ease;
+      }
+      @keyframes pulse {
+        from {
+          transform: scale(0.98);
+        }
+        50% {
+          transform: scale(1.02);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+      .pill.small {
+        font-size: 0.8rem;
+        font-weight: 900;
+        opacity: 0.85;
+      }
 
-.quiz-controls {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 0.75rem;
-}
-.quiz-controls .left {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
+      .quiz-controls {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.75rem;
+      }
+      .quiz-controls .left {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
 
-/* ===== RESULTS ===== */
-.result-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.badge {
-  padding: 0.4rem 0.7rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  font-weight: 900;
-}
-.bars {
-  display: grid;
-  gap: 0.5rem;
-}
-.bar {
-  height: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 999px;
-  overflow: hidden;
-  position: relative;
-}
-.bar > span {
-  position: absolute;
-  inset: 0 50% 0 0;
-  background: linear-gradient(90deg, var(--brand), var(--brand-2));
-  transition: inset 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.bar .label {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.8rem;
-  color: var(--muted);
-  font-weight: 800;
-  padding: 0 0.5rem;
-}
+      /* ===== RESULTS ===== */
+      .result-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .badge {
+        padding: 0.4rem 0.7rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        font-weight: 900;
+      }
+      .bars {
+        display: grid;
+        gap: 0.5rem;
+      }
+      .bar {
+        height: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 999px;
+        overflow: hidden;
+        position: relative;
+      }
+      .bar > span {
+        position: absolute;
+        inset: 0 50% 0 0;
+        background: linear-gradient(90deg, var(--brand), var(--brand-2));
+        transition: inset 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .bar .label {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-weight: 800;
+        padding: 0 0.5rem;
+      }
 
-/* ===== TYPES DIRECTORY ===== */
-.type-card {
-  padding: 1rem;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
-  display: grid;
-  gap: 0.35rem;
-  transition: transform 0.18s ease, background 0.2s ease;
-}
-.type-card:hover {
-  transform: translateY(-3px);
-  background: rgba(255, 255, 255, 0.07);
-}
+      /* ===== TYPES DIRECTORY ===== */
+      .type-card {
+        padding: 1rem;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.05);
+        display: grid;
+        gap: 0.35rem;
+        transition: transform 0.18s ease, background 0.2s ease;
+      }
+      .type-card:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.07);
+      }
 
-/* ===== UTIL ===== */
-.sr-only {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-.muted {
-  color: var(--muted);
-}
-.kbd {
-  font-weight: 900;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.15rem 0.35rem;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.08);
-}
-.flex {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-.right {
-  margin-left: auto;
-}
-  </style>
-  
-  <header>
-    <div class="container nav" role="navigation" aria-label="Үндсэн цэс">
-      <div class="brand" onclick="scrollToId('top')">
-        <img class="logo" src="mbtilogo.png" alt="">
-        <span>MBTI Cудалгаа</span>
-      </div>
-      <nav class="flex">
-        <a href="#quiz" onclick="scrollToId('quiz')">Тест</a>
-        <a href="#types" onclick="scrollToId('types')">16 төрөл</a>
-        <a href="#compare" onclick="scrollToId('compare')">Харьцуулах</a>
-        <a href="#about" onclick="scrollToId('about')">Тухай</a>
-      </nav>
-      <div class="controls">
-        <button class="btn ghost" id="themeToggle" title="Гэрэл/харанхуй">🌗</button>
-        <button class="btn" onclick="scrollToId('quiz')">Эхлэх</button>
-      </div>
-    </div>
-  </header>
+      /* ===== UTIL ===== */
+      .sr-only {
+        position: absolute;
+        left: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .kbd {
+        font-weight: 900;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.15rem 0.35rem;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .flex {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .right {
+        margin-left: auto;
+      }
+    </style>
 
-  <main id="top" class="container">
-    <!-- HERO -->
-    <section class="hero section card p-lg reveal" aria-labelledby="hero-title">
-      <div class="hero-grid">
-        <div>
-          <h1 class="title" id="hero-title">Өөрийн хэн болохыг мэд. ✨</h1>
-          <p class="subtitle">Таны хэн болох мөн яагаад ийм үйлдлүүд хийдэг тухай “гайхалтай үнэн зөв” тодорхойлолтыг олж авахад ердөө 10 минут зарцуулагдана.</p>
-          <div class="features">
-            <div class="feature reveal"><strong>⚡ Нэг файл.</strong><br/>шууд ачаална.</div>
-            <div class="feature reveal"><strong>🧭 Тод дүгнэлт.</strong><br/>Хариулт бүрийг шууд хянана.</div>
-            <div class="feature reveal"><strong>🔒 Нууцлал.</strong><br/>Таны өгөгдөлыг нууцлалтай байлгана.</div>
-          </div>
-          <div class="flex" style="margin-top:1rem">
-            <button class="btn" onclick="scrollToId('quiz')">Тест өгөх</button>
-            <button class="btn ghost" onclick="window.print()">🖨️ Хэвлэх/ PDF</button>
-          </div>
+    <header>
+      <div class="container nav" role="navigation" aria-label="Үндсэн цэс">
+        <div class="brand" onclick="scrollToId('top')">
+          <img class="logo" src="mbtilogo.png" alt="" />
+          <span>MBTI Cудалгаа</span>
         </div>
-        <div class="card p-md reveal" aria-live="polite">
-          <h3 style="margin:.25rem 0">Сүүлчийн дүн</h3>
-          <p class="muted" id="lastResultNote">Одоогоор дүн алга. Эхлээд тест өгнө үү.</p>
-          <div id="lastResult" class="grid" style="display:none">
-            <div class="result-header">
-              <div>
-                <div class="badge" id="lastType">XXXX</div>
-                <div class="muted" id="lastNickname">—</div>
+        <nav class="flex">
+          <a href="#quiz" onclick="scrollToId('quiz')">Тест</a>
+          <a href="#types" onclick="scrollToId('types')">16 төрөл</a>
+          <a href="#compare" onclick="scrollToId('compare')">Харьцуулах</a>
+          <a href="#about" onclick="scrollToId('about')">Тухай</a>
+        </nav>
+        <div class="controls">
+          <button class="btn ghost" id="themeToggle" title="Гэрэл/харанхуй">
+            🌗
+          </button>
+          <button class="btn" onclick="scrollToId('quiz')">Эхлэх</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="top" class="container">
+      <!-- HERO -->
+      <section
+        class="hero section card p-lg reveal"
+        aria-labelledby="hero-title"
+      >
+        <div class="hero-grid">
+          <div>
+            <h1 class="title" id="hero-title">Өөрийн хэн болохыг мэд. ✨</h1>
+            <p class="subtitle">
+              Таны хэн болох мөн яагаад ийм үйлдлүүд хийдэг тухай “гайхалтай
+              үнэн зөв” тодорхойлолтыг олж авахад ердөө 10 минут зарцуулагдана.
+            </p>
+            <div class="features">
+              <div class="feature reveal">
+                <strong>⚡ Нэг файл.</strong><br />шууд ачаална.
               </div>
-              <div class="flex">
-                <button class="btn ghost" id="shareBtn">Хуваалцах</button>
-                <button class="btn" id="restartBtn">Дахин өгөх</button>
+              <div class="feature reveal">
+                <strong>🧭 Тод дүгнэлт.</strong><br />Хариулт бүрийг шууд
+                хянана.
+              </div>
+              <div class="feature reveal">
+                <strong>🔒 Нууцлал.</strong><br />Таны өгөгдөлыг нууцлалтай
+                байлгана.
               </div>
             </div>
-            <div class="bars" id="lastBars"></div>
+            <div class="flex" style="margin-top: 1rem">
+              <button class="btn" onclick="scrollToId('quiz')">
+                Тест өгөх
+              </button>
+              <button class="btn ghost" onclick="window.print()">
+                🖨️ Хэвлэх/ PDF
+              </button>
+            </div>
+          </div>
+          <div class="card p-md reveal" aria-live="polite">
+            <h3 style="margin: 0.25rem 0">Сүүлчийн дүн</h3>
+            <p class="muted" id="lastResultNote">
+              Одоогоор дүн алга. Эхлээд тест өгнө үү.
+            </p>
+            <div id="lastResult" class="grid" style="display: none">
+              <div class="result-header">
+                <div>
+                  <div class="badge" id="lastType">XXXX</div>
+                  <div class="muted" id="lastNickname">—</div>
+                </div>
+                <div class="flex">
+                  <button class="btn ghost" id="shareBtn">Хуваалцах</button>
+                  <button class="btn" id="restartBtn">Дахин өгөх</button>
+                </div>
+              </div>
+              <div class="bars" id="lastBars"></div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- QUIZ -->
-    <section id="quiz" class="section card p-lg reveal" aria-labelledby="quiz-title">
-      <h2 class="title" id="quiz-title">MBTI Тест</h2>
-     
-      <div class="quiz-progress" aria-hidden="true"><div class="quiz-bar" id="quizBar"></div></div>
-      <ol id="quizList" class="grid" style="margin-top:1rem"></ol>
-      <div class="quiz-controls">
-        <div class="left">
-          <button class="btn ghost" id="backBtn">⟵ Буцах</button>
-          <span class="muted" id="qCounter">0 / 0</span>
+      <!-- QUIZ -->
+      <section
+        id="quiz"
+        class="section card p-lg reveal"
+        aria-labelledby="quiz-title"
+      >
+        <h2 class="title" id="quiz-title">MBTI Тест</h2>
+
+        <div class="quiz-progress" aria-hidden="true">
+          <div class="quiz-bar" id="quizBar"></div>
         </div>
-        <div class="right flex">
-          <button class="btn ghost" id="clearBtn">Цэвэрлэх</button>
-          <button class="btn" id="finishBtn">Дуусгах</button>
+        <ol id="quizList" class="grid" style="margin-top: 1rem"></ol>
+        <div class="quiz-controls">
+          <div class="left">
+            <button class="btn ghost" id="backBtn">⟵ Буцах</button>
+            <span class="muted" id="qCounter">0 / 0</span>
+          </div>
+          <div class="right flex">
+            <button class="btn ghost" id="clearBtn">Цэвэрлэх</button>
+            <button class="btn" id="finishBtn">Дуусгах</button>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- RESULTS -->
-    <section id="results" class="section card p-lg reveal" aria-labelledby="results-title" style="display:none">
-      <h2 class="title" id="results-title">Таны дүн</h2>
-      <div class="result-header">
-        <div>
-          <div class="badge" id="resType">XXXX</div>
-          <div class="muted" id="resNick">—</div>
+      <!-- RESULTS -->
+      <section
+        id="results"
+        class="section card p-lg reveal"
+        aria-labelledby="results-title"
+        style="display: none"
+      >
+        <h2 class="title" id="results-title">Таны дүн</h2>
+        <div class="result-header">
+          <div>
+            <div class="badge" id="resType">XXXX</div>
+            <div class="muted" id="resNick">—</div>
+          </div>
+          <div class="flex">
+            <button class="btn ghost" id="copyLink">Холбоос хуулах</button>
+            <button class="btn" id="shareResult">Хуваалцах</button>
+          </div>
         </div>
-        <div class="flex">
-          <button class="btn ghost" id="copyLink">Холбоос хуулах</button>
-          <button class="btn" id="shareResult">Хуваалцах</button>
+        <div class="grid cols-2" style="margin-top: 1rem">
+          <div>
+            <h3>Задлал</h3>
+            <div class="bars" id="resBars"></div>
+            <p class="muted" style="margin-top: 0.75rem">
+              Их хувь = тухайн хосын эхний үсгийг илүү илэрхий давуу.
+            </p>
+          </div>
+          <div>
+            <h3><span id="aboutCode">XXXX</span> — Тухай</h3>
+            <p id="resAbout" class="muted"></p>
+            <h4 style="margin: 0.5rem 0 0">Давуу тал</h4>
+            <ul id="resStrengths"></ul>
+            <h4 style="margin: 0.75rem 0 0">Өсөх санаа</h4>
+            <ul id="resGrowth"></ul>
+          </div>
         </div>
-      </div>
-      <div class="grid cols-2" style="margin-top:1rem">
-        <div>
-          <h3>Задлал</h3>
-          <div class="bars" id="resBars"></div>
-          <p class="muted" style="margin-top:.75rem">Их хувь = тухайн хосын эхний үсгийг илүү илэрхий давуу.</p>
+      </section>
+
+      <!-- TYPES DIRECTORY -->
+      <section
+        id="types"
+        class="section card p-lg reveal"
+        aria-labelledby="types-title"
+      >
+        <h2 class="title" id="types-title">16 төрөл</h2>
+        <div id="typesGrid" class="grid cols-4"></div>
+      </section>
+
+      <!-- COMPARE -->
+      <section
+        id="compare"
+        class="section card p-lg reveal"
+        aria-labelledby="compare-title"
+      >
+        <h2 class="title" id="compare-title">Төрлүүдийг харьцуулах</h2>
+        <div class="grid cols-2">
+          <div>
+            <label for="cmpA" class="muted">А төрөл</label>
+            <select id="cmpA"></select>
+          </div>
+          <div>
+            <label for="cmpB" class="muted">Б төрөл</label>
+            <select id="cmpB"></select>
+          </div>
         </div>
-        <div>
-          <h3><span id="aboutCode">XXXX</span> — Тухай</h3>
-          <p id="resAbout" class="muted"></p>
-          <h4 style="margin:.5rem 0 0">Давуу тал</h4>
-          <ul id="resStrengths"></ul>
-          <h4 style="margin:.75rem 0 0">Өсөх санаа</h4>
-          <ul id="resGrowth"></ul>
+        <div class="grid cols-2" style="margin-top: 1rem">
+          <div class="type-card" id="cmpACard"></div>
+          <div class="type-card" id="cmpBCard"></div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- TYPES DIRECTORY -->
-    <section id="types" class="section card p-lg reveal" aria-labelledby="types-title">
-      <h2 class="title" id="types-title">16 төрөл</h2>
-      <div id="typesGrid" class="grid cols-4"></div>
-    </section>
+      <!-- ABOUT -->
+      <section
+        id="about"
+        class="section card p-lg reveal"
+        aria-labelledby="about-title"
+      >
+        <h2 class="title" id="about-title">Сайтын тухай</h2>
+        <p class="muted">
+          Энэ бол MBTI хүрээнээс санаа авсан суралцах хэрэгсэл (4 хослол:
+          Экстраверц/Интраверц, Мэдрэхүй/Зөн совин, Бодол/Мэдрэмж,
+          Шүүх/Тайлбарлах). Бусад сайтнаас санаа аван хийсэн болно.
+        </p>
+      </section>
 
-    <!-- COMPARE -->
-    <section id="compare" class="section card p-lg reveal" aria-labelledby="compare-title">
-      <h2 class="title" id="compare-title">Төрлүүдийг харьцуулах</h2>
-      <div class="grid cols-2">
-        <div>
-          <label for="cmpA" class="muted">А төрөл</label>
-          <select id="cmpA"></select>
-        </div>
-        <div>
-          <label for="cmpB" class="muted">Б төрөл</label>
-          <select id="cmpB"></select>
-        </div>
-      </div>
-      <div class="grid cols-2" style="margin-top:1rem">
-        <div class="type-card" id="cmpACard"></div>
-        <div class="type-card" id="cmpBCard"></div>
-      </div>
-    </section>
+      <footer class="container" style="padding-bottom: 3rem">
+        <div class="muted">Made by Team Dornogovi Simba.</div>
+      </footer>
+    </main>
+  </body>
+  <script>
+    /** @format */
 
-    <!-- ABOUT -->
-    <section id="about" class="section card p-lg reveal" aria-labelledby="about-title">
-      <h2 class="title" id="about-title">Сайтын тухай</h2>
-      <p class="muted">Энэ бол MBTI хүрээнээс санаа авсан суралцах хэрэгсэл (4 хослол: Экстраверц/Интраверц, Мэдрэхүй/Зөн совин, Бодол/Мэдрэмж, Шүүх/Тайлбарлах). Бусад сайтнаас санаа аван хийсэн болно.</p>
-    </section>
+    // ===== UTIL =====
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+    const scrollToId = (id) => {
+      document
+        .getElementById(id)
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
 
-    <footer class="container" style="padding-bottom:3rem">
-      <div class="muted">Made by Team Dornogovi Simba.</div>
-    </footer>
-  </main>
-</body>
-<script>
-  /** @format */
-
-// ===== UTIL =====
-const $ = (sel, root = document) => root.querySelector(sel);
-const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
-const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-const scrollToId = (id) => {
-  document
-    .getElementById(id)
-    ?.scrollIntoView({ behavior: "smooth", block: "start" });
-};
-
-// Theme toggle
-const themeToggle = document.getElementById("themeToggle");
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "light") document.body.classList.add("light");
-const ripple = (btn) => {
-  btn.classList.remove("rippling");
-  void btn.offsetWidth;
-  btn.classList.add("rippling");
-  setTimeout(() => btn.classList.remove("rippling"), 600);
-};
-themeToggle.addEventListener("click", (e) => {
-  document.body.classList.toggle("light");
-  localStorage.setItem(
-    "theme",
-    document.body.classList.contains("light") ? "light" : "dark"
-  );
-  ripple(e.currentTarget);
-});
-
-// Scroll reveal
-const io = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((en) => {
-      if (en.isIntersecting) en.target.classList.add("in-view");
+    // Theme toggle
+    const themeToggle = document.getElementById("themeToggle");
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light") document.body.classList.add("light");
+    const ripple = (btn) => {
+      btn.classList.remove("rippling");
+      void btn.offsetWidth;
+      btn.classList.add("rippling");
+      setTimeout(() => btn.classList.remove("rippling"), 600);
+    };
+    themeToggle.addEventListener("click", (e) => {
+      document.body.classList.toggle("light");
+      localStorage.setItem(
+        "theme",
+        document.body.classList.contains("light") ? "light" : "dark"
+      );
+      ripple(e.currentTarget);
     });
-  },
-  { threshold: 0.12 }
-);
-$$(".reveal").forEach((el) => io.observe(el));
 
-// ===== MBTI DATA (MN) =====
-const TYPES = {
-  ISTJ: {
-    nick: "Хянагч",
-    about:
-      "Бодит, хариуцлагатай, нарийн ширийнд анхаарна. Дүрэм, бүтэц үнэлдэг.",
-    strengths: ["Нягт нямбай", "Дарамтанд тайван", "Логистик сайн"],
-    growth: [
-      "Дүрмээс уян хатан",
-      "Хэрэгцээгээ ил тод хэл",
-      "Шинэ санааг сонсо",
-    ],
-  },
-  ISFJ: {
-    nick: "Хамгаалагч",
-    about:
-      "Дулаан, чин үнэнч, зориулагч. Хүмүүсийн тухай дэлгэрэнгүйг санадаг.",
-    strengths: ["Дэмжих хамтрагч", "Тэвчээртэй сонсогч", "Амлалтаа биелүүлдэг"],
-    growth: ["Даалгавар хуваарил", "Хилээ тогтоо", "Өөрчлөлтөд аажмаар дас"],
-  },
-  INFJ: {
-    nick: "Мэргэн",
-    about: "Дотоод洞т ойлголттой, идеалист, эмпат. Утга учрыг эрдэг.",
-    strengths: ["Гүн эмпат", "Стратеги бодол", "Зорилгод чиглэсэн"],
-    growth: [
-      "Төгс төгөлдөржилт багасга",
-      "Эргэлзээгээ хуваалц",
-      "Амрах цаг ав",
-    ],
-  },
-  INTJ: {
-    nick: "Архитектор",
-    about:
-      "Бие даасан, стратегич, ирээдүйд төвлөрнө. Систем оновчтой болгох дуртай.",
-    strengths: [
-      "Урт хугацааны төлөвлөлт",
-      "Системийн сэтгэлгээ",
-      "Өндөр стандарт",
-    ],
-    growth: [
-      "Дотно байдлаа илэрхийл",
-      "Хүмүүстэй таамгийг турш",
-      "Ил тод давталт хий",
-    ],
-  },
-  ISTP: {
-    nick: "Мэдрэмчтэй",
-    about:
-      "Шинжилгээтэй, гар ажиллагаатай асуудал шийдэгч. Түргэн дасан зохицно.",
-    strengths: ["Алдаа засах", "Практик бүтээлч", "Хямралд тайван"],
-    growth: ["Төлөвлөгөөгөө хуваалц", "Урт нөлөөг бодолц", "Тусламж хүлээж ав"],
-  },
-  ISFP: {
-    nick: "Уран бүтээлч",
-    about: "Зөөлөн, жинхэнэ, уян хатан. Хувийн илэрхийлэл, зохицлыг эрхэмлэнэ.",
-    strengths: ["Дүрслэх мэдрэмж", "Эмпат орчин", "Уян хатан тайван"],
-    growth: [
-      "Хэрэгцээгээ хэл",
-      "Урьдчилан төлөвлө",
-      "Санал хүсэлтийг хүлээж ав",
-    ],
-  },
-  INFP: {
-    nick: "Мөрөөдөгч",
-    about: "Идеалист, үнэт зүйлд суурилсан, төсөөлөл ихтэй.",
-    strengths: ["Бүтээлч санаа", "Хүмүүст үнэнч", "Нээлттэй сэтгэлгээ"],
-    growth: [
-      "Алхмууд болгон буулга",
-      "Өөр/бусдыг тэнцвэрлэ",
-      "Бодит хил тогтоо",
-    ],
-  },
-  INTP: {
-    nick: "Шинжээч",
-    about: "Сониуч, онолын, бие даасан. Хээ загварыг хайрлана.",
-    strengths: ["Логик ил тод", "Концепт бүтээх", "Объектив анализ"],
-    growth: ["Эрт нийлүүл", "Харилцааны өнгийг анзаар", "Хаалтуудыг хаа"],
-  },
-  ESTP: {
-    nick: "Динамик",
-    about: "Эрч хүчтэй, үйлдэлд төвлөрсөн, нөөцтэй. Моментод амьдарна.",
-    strengths: ["Хурдан шийдвэр", "Ятгах чадвар", "Гараар сурна"],
-    growth: ["Урт хугацааг бод", "Сонсож удаашир", "Эхэлснээ дуусга"],
-  },
-  ESFP: {
-    nick: "Уур амьсгал бүтээгч",
-    about: "Цовоо, найрсаг, цочмог. Өрөөг энергижүүлнэ.",
-    strengths: ["Нийгмийн цавуу", "Дасан зохицох", "Хүмүүсийг ажиглана"],
-    growth: ["Энерги/цаг төсөвлө", "Дэг журмыг тэвч", 'Эелдгээр "үгүй" гэ'],
-  },
-  ENFP: {
-    nick: "Авьяасжуулагч",
-    about:
-      "Дур булаам, төсөөлөмтгий, хүмүүст төвлөрсөн. Боломж хаа сайгүй харна.",
-    strengths: ["Санаа үүсгэгч", "Эмпат", "Урам өгөгч"],
-    growth: ["Эрэмбэлж сур", "Дадал бий болго", "Дуусгалтанд анхаар"],
-  },
-  ENTP: {
-    nick: "Маргаанч",
-    about: "Санаачлагч, хурдан ухаан, сорилтод дуртай. Сонголтуудыг судална.",
-    strengths: ["Бүтээлч шийдэл", "Өөрчлөлтөнд тайван", "Хэл ярианы авьяас"],
-    growth: ["Тулаанаа сонго", "Туршилтыг дуусга", "Бусдын хэмнэлийг хүндэл"],
-  },
-  ESTJ: {
-    nick: "Менежер",
-    about: "Эмх цэгцтэй, шууд, үр дүнд чиглэсэн.",
-    strengths: ["Үйл ажиллагаа сайн", "Хариуцлага", "Шийдэмгий"],
-    growth: ["Сөрөг саналыг урь", "Процесс уян болго", "Дулааныг тэнцвэрлэ"],
-  },
-  ESFJ: {
-    nick: "Эзэн",
-    about: "Арчлагч, хамтын, нийгэмч. Багаар холбоо тогтооно.",
-    strengths: ["Харилцаа баригч", "Үйлчилгээнд чиглэсэн", "Найдвартай дагалт"],
-    growth: ["Өөрийгөө асар", "Маргааныг зөвшөөр", "Аажмаар турш"],
-  },
-  ENFJ: {
-    nick: "Ментор",
-    about:
-      "Эмпат, нөлөөлөгч, эрхэм зорилготой. Бусдын шилдэг талыг ил гаргана.",
-    strengths: ["Коучинг", "Хүмүүсийг уялдуулах", "Үнэ цэнийн нийцэл"],
-    growth: [
-      "Хэт ачаалал битгий ав",
-      "Хилээ тод тогтоо",
-      "Цэнэг авах завсарлагатай",
-    ],
-  },
-  ENTJ: {
-    nick: "Командлагч",
-    about: "Стратегич, зоригтой, үр ашигтай. Баригдах ёстойг харна.",
-    strengths: [
-      "Том зургаар хэрэгжүүлэлт",
-      "Итгэлтэй шийдвэр",
-      "Өндөр стандарт",
-    ],
-    growth: [
-      "Нарийн өнгө аясыг сонс",
-      "Жижиг ялалтыг тэмдэглэ",
-      "Хурдыг тааруул",
-    ],
-  },
-};
+    // Scroll reveal
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) en.target.classList.add("in-view");
+        });
+      },
+      { threshold: 0.12 }
+    );
+    $$(".reveal").forEach((el) => io.observe(el));
 
-const TYPE_KEYS = Object.keys(TYPES);
+    // ===== MBTI DATA (MN) =====
+    const TYPES = {
+      ISTJ: {
+        nick: "Хянагч",
+        about:
+          "Бодит, хариуцлагатай, нарийн ширийнд анхаарна. Дүрэм, бүтэц үнэлдэг.",
+        strengths: ["Нягт нямбай", "Дарамтанд тайван", "Логистик сайн"],
+        growth: [
+          "Дүрмээс уян хатан",
+          "Хэрэгцээгээ ил тод хэл",
+          "Шинэ санааг сонсо",
+        ],
+      },
+      ISFJ: {
+        nick: "Хамгаалагч",
+        about:
+          "Дулаан, чин үнэнч, зориулагч. Хүмүүсийн тухай дэлгэрэнгүйг санадаг.",
+        strengths: [
+          "Дэмжих хамтрагч",
+          "Тэвчээртэй сонсогч",
+          "Амлалтаа биелүүлдэг",
+        ],
+        growth: [
+          "Даалгавар хуваарил",
+          "Хилээ тогтоо",
+          "Өөрчлөлтөд аажмаар дас",
+        ],
+      },
+      INFJ: {
+        nick: "Мэргэн",
+        about: "Дотоод洞т ойлголттой, идеалист, эмпат. Утга учрыг эрдэг.",
+        strengths: ["Гүн эмпат", "Стратеги бодол", "Зорилгод чиглэсэн"],
+        growth: [
+          "Төгс төгөлдөржилт багасга",
+          "Эргэлзээгээ хуваалц",
+          "Амрах цаг ав",
+        ],
+      },
+      INTJ: {
+        nick: "Архитектор",
+        about:
+          "Бие даасан, стратегич, ирээдүйд төвлөрнө. Систем оновчтой болгох дуртай.",
+        strengths: [
+          "Урт хугацааны төлөвлөлт",
+          "Системийн сэтгэлгээ",
+          "Өндөр стандарт",
+        ],
+        growth: [
+          "Дотно байдлаа илэрхийл",
+          "Хүмүүстэй таамгийг турш",
+          "Ил тод давталт хий",
+        ],
+      },
+      ISTP: {
+        nick: "Мэдрэмчтэй",
+        about:
+          "Шинжилгээтэй, гар ажиллагаатай асуудал шийдэгч. Түргэн дасан зохицно.",
+        strengths: ["Алдаа засах", "Практик бүтээлч", "Хямралд тайван"],
+        growth: [
+          "Төлөвлөгөөгөө хуваалц",
+          "Урт нөлөөг бодолц",
+          "Тусламж хүлээж ав",
+        ],
+      },
+      ISFP: {
+        nick: "Уран бүтээлч",
+        about:
+          "Зөөлөн, жинхэнэ, уян хатан. Хувийн илэрхийлэл, зохицлыг эрхэмлэнэ.",
+        strengths: ["Дүрслэх мэдрэмж", "Эмпат орчин", "Уян хатан тайван"],
+        growth: [
+          "Хэрэгцээгээ хэл",
+          "Урьдчилан төлөвлө",
+          "Санал хүсэлтийг хүлээж ав",
+        ],
+      },
+      INFP: {
+        nick: "Мөрөөдөгч",
+        about: "Идеалист, үнэт зүйлд суурилсан, төсөөлөл ихтэй.",
+        strengths: ["Бүтээлч санаа", "Хүмүүст үнэнч", "Нээлттэй сэтгэлгээ"],
+        growth: [
+          "Алхмууд болгон буулга",
+          "Өөр/бусдыг тэнцвэрлэ",
+          "Бодит хил тогтоо",
+        ],
+      },
+      INTP: {
+        nick: "Шинжээч",
+        about: "Сониуч, онолын, бие даасан. Хээ загварыг хайрлана.",
+        strengths: ["Логик ил тод", "Концепт бүтээх", "Объектив анализ"],
+        growth: ["Эрт нийлүүл", "Харилцааны өнгийг анзаар", "Хаалтуудыг хаа"],
+      },
+      ESTP: {
+        nick: "Динамик",
+        about: "Эрч хүчтэй, үйлдэлд төвлөрсөн, нөөцтэй. Моментод амьдарна.",
+        strengths: ["Хурдан шийдвэр", "Ятгах чадвар", "Гараар сурна"],
+        growth: ["Урт хугацааг бод", "Сонсож удаашир", "Эхэлснээ дуусга"],
+      },
+      ESFP: {
+        nick: "Уур амьсгал бүтээгч",
+        about: "Цовоо, найрсаг, цочмог. Өрөөг энергижүүлнэ.",
+        strengths: ["Нийгмийн цавуу", "Дасан зохицох", "Хүмүүсийг ажиглана"],
+        growth: ["Энерги/цаг төсөвлө", "Дэг журмыг тэвч", 'Эелдгээр "үгүй" гэ'],
+      },
+      ENFP: {
+        nick: "Авьяасжуулагч",
+        about:
+          "Дур булаам, төсөөлөмтгий, хүмүүст төвлөрсөн. Боломж хаа сайгүй харна.",
+        strengths: ["Санаа үүсгэгч", "Эмпат", "Урам өгөгч"],
+        growth: ["Эрэмбэлж сур", "Дадал бий болго", "Дуусгалтанд анхаар"],
+      },
+      ENTP: {
+        nick: "Маргаанч",
+        about:
+          "Санаачлагч, хурдан ухаан, сорилтод дуртай. Сонголтуудыг судална.",
+        strengths: [
+          "Бүтээлч шийдэл",
+          "Өөрчлөлтөнд тайван",
+          "Хэл ярианы авьяас",
+        ],
+        growth: [
+          "Тулаанаа сонго",
+          "Туршилтыг дуусга",
+          "Бусдын хэмнэлийг хүндэл",
+        ],
+      },
+      ESTJ: {
+        nick: "Менежер",
+        about: "Эмх цэгцтэй, шууд, үр дүнд чиглэсэн.",
+        strengths: ["Үйл ажиллагаа сайн", "Хариуцлага", "Шийдэмгий"],
+        growth: [
+          "Сөрөг саналыг урь",
+          "Процесс уян болго",
+          "Дулааныг тэнцвэрлэ",
+        ],
+      },
+      ESFJ: {
+        nick: "Эзэн",
+        about: "Арчлагч, хамтын, нийгэмч. Багаар холбоо тогтооно.",
+        strengths: [
+          "Харилцаа баригч",
+          "Үйлчилгээнд чиглэсэн",
+          "Найдвартай дагалт",
+        ],
+        growth: ["Өөрийгөө асар", "Маргааныг зөвшөөр", "Аажмаар турш"],
+      },
+      ENFJ: {
+        nick: "Ментор",
+        about:
+          "Эмпат, нөлөөлөгч, эрхэм зорилготой. Бусдын шилдэг талыг ил гаргана.",
+        strengths: ["Коучинг", "Хүмүүсийг уялдуулах", "Үнэ цэнийн нийцэл"],
+        growth: [
+          "Хэт ачаалал битгий ав",
+          "Хилээ тод тогтоо",
+          "Цэнэг авах завсарлагатай",
+        ],
+      },
+      ENTJ: {
+        nick: "Командлагч",
+        about: "Стратегич, зоригтой, үр ашигтай. Баригдах ёстойг харна.",
+        strengths: [
+          "Том зургаар хэрэгжүүлэлт",
+          "Итгэлтэй шийдвэр",
+          "Өндөр стандарт",
+        ],
+        growth: [
+          "Нарийн өнгө аясыг сонс",
+          "Жижиг ялалтыг тэмдэглэ",
+          "Хурдыг тааруул",
+        ],
+      },
+    };
 
-// Build Types directory
-const typesGrid = document.getElementById("typesGrid");
-TYPE_KEYS.forEach((code) => {
-  const div = document.createElement("div");
-  div.className = "type-card reveal";
-  div.innerHTML = `<div class="code">${code}</div><div class="nick">${TYPES[code].nick}</div><div class="muted">${TYPES[code].about}</div>`;
-  div.tabIndex = 0;
-  div.role = "button";
-  div.addEventListener("click", () => showTypeDetail(code));
-  div.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") showTypeDetail(code);
-  });
-  typesGrid.appendChild(div);
-  io.observe(div);
-});
+    const TYPE_KEYS = Object.keys(TYPES);
 
-function showTypeDetail(code) {
-  const data = TYPES[code];
-  alert(`${code} — ${data.nick}
+    // Build Types directory
+    const typesGrid = document.getElementById("typesGrid");
+    TYPE_KEYS.forEach((code) => {
+      const div = document.createElement("div");
+      div.className = "type-card reveal";
+      div.innerHTML = `<div class="code">${code}</div><div class="nick">${TYPES[code].nick}</div><div class="muted">${TYPES[code].about}</div>`;
+      div.tabIndex = 0;
+      div.role = "button";
+      div.addEventListener("click", () => showTypeDetail(code));
+      div.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") showTypeDetail(code);
+      });
+      typesGrid.appendChild(div);
+      io.observe(div);
+    });
+
+    function showTypeDetail(code) {
+      const data = TYPES[code];
+      alert(`${code} — ${data.nick}
 
 ${data.about}`);
-}
+    }
 
-// Compare dropdowns
-const cmpA = document.getElementById("cmpA");
-const cmpB = document.getElementById("cmpB");
-TYPE_KEYS.forEach((k) => {
-  cmpA.add(new Option(`${k} — ${TYPES[k].nick}`, k));
-  cmpB.add(new Option(`${k} — ${TYPES[k].nick}`, k));
-});
-cmpA.value = "INTJ";
-cmpB.value = "ENFP";
-const cmpACard = document.getElementById("cmpACard");
-const cmpBCard = document.getElementById("cmpBCard");
-function renderCmp() {
-  const a = TYPES[cmpA.value],
-    b = TYPES[cmpB.value];
-  cmpACard.innerHTML = `<div class="code">${cmpA.value}</div><div class="nick">${a.nick}</div><div class="muted">${a.about}</div>`;
-  cmpBCard.innerHTML = `<div class="code">${cmpB.value}</div><div class="nick">${b.nick}</div><div class="muted">${b.about}</div>`;
-}
-cmpA.onchange = renderCmp;
-cmpB.onchange = renderCmp;
-renderCmp();
+    // Compare dropdowns
+    const cmpA = document.getElementById("cmpA");
+    const cmpB = document.getElementById("cmpB");
+    TYPE_KEYS.forEach((k) => {
+      cmpA.add(new Option(`${k} — ${TYPES[k].nick}`, k));
+      cmpB.add(new Option(`${k} — ${TYPES[k].nick}`, k));
+    });
+    cmpA.value = "INTJ";
+    cmpB.value = "ENFP";
+    const cmpACard = document.getElementById("cmpACard");
+    const cmpBCard = document.getElementById("cmpBCard");
+    function renderCmp() {
+      const a = TYPES[cmpA.value],
+        b = TYPES[cmpB.value];
+      cmpACard.innerHTML = `<div class="code">${cmpA.value}</div><div class="nick">${a.nick}</div><div class="muted">${a.about}</div>`;
+      cmpBCard.innerHTML = `<div class="code">${cmpB.value}</div><div class="nick">${b.nick}</div><div class="muted">${b.about}</div>`;
+    }
+    cmpA.onchange = renderCmp;
+    cmpB.onchange = renderCmp;
+    renderCmp();
 
-// ===== QUIZ ENGINE =====
-const QUESTIONS = [
-  { t: "Олны дунд байхад надад эрч хүч өгдөг.", axis: "EI", first: true },
-  { t: "Би ганцаараа байхдаа илүү тайван байдаг.", axis: "EI", first: false },
-  {
-    t: "Би боломжоос илүү бодит баримтад төвлөрөх хандлагатай.",
-    axis: "SN",
-    first: true,
-  },
-  {
-    t: "Би байгаагаас илүү болохыг төсөөлөх дуртай.",
-    axis: "SN",
-    first: false,
-  },
-  { t: "Хар ухаанаар илүү шийдвэр гаргадаг.", axis: "TF", first: true },
-  {
-    t: "Шийдвэр гаргахад бусдын мэдрэмжийг түрүүнд тавьдаг.",
-    axis: "TF",
-    first: false,
-  },
-  { t: "Зүгээр суух дургүй.", axis: "JP", first: true },
-  {
-    t: "Төлөвлөгөө уян хатан нээлттэй байхдаа сайхан.",
-    axis: "JP",
-    first: false,
-  },
-  { t: "Сэтгэл хөдөлсөн үедээ бодолгүй ярьчихдаг.", axis: "EI", first: true },
-  {
-    t: "Сэтгэл хөдөлсөн ч эхлээд бодож дараа нь ярьдаг.",
-    axis: "EI",
-    first: false,
-  },
-  { t: "Туршлагадаа илүү итгэдэг.", axis: "SN", first: true },
-  { t: "Мөр хооронд унших нь надад амархан.", axis: "SN", first: false },
-  { t: "Сэтгэгдэл илэн далангүй, шулуун байх нь дээр.", axis: "TF", first: true },
-  { t: "Зөв байххаас илүү эв нэгдэл чухал.", axis: "TF", first: false },
-  { t: "To‑do жагсаалт хөтөлж цэгцтэй байх дуртай.", axis: "JP", first: true },
-  {
-    t: "Эцсийн хугацаа надад сануулга шиг л санагддаг.",
-    axis: "JP",
-    first: false,
-  },
-  { t: "Завгүй нийгмийн амьдралд дуртай.", axis: "EI", first: true },
-  {
-    t: "Олон хүнтэй ярьснаас илүү мэддэг хүнтэйгээ ярих нь тухтай.",
-    axis: "EI",
-    first: false,
-  },
-  { t: "Бусдын анзаардаггүй зүйлсийг би анзаардаг.", axis: "SN", first: true },
-  { t: "Ирээдүйгээ том зургаар харах илүү.", axis: "SN", first: false },
-];
+    // ===== QUIZ ENGINE =====
+    const QUESTIONS = [
+      { t: "Олны дунд байхад надад эрч хүч өгдөг.", axis: "EI", first: true },
+      {
+        t: "Би ганцаараа байхдаа илүү тайван байдаг.",
+        axis: "EI",
+        first: false,
+      },
+      {
+        t: "Би боломжоос илүү бодит баримтад төвлөрөх хандлагатай.",
+        axis: "SN",
+        first: true,
+      },
+      {
+        t: "Би байгаагаас илүү болохыг төсөөлөх дуртай.",
+        axis: "SN",
+        first: false,
+      },
+      { t: "Хар ухаанаар илүү шийдвэр гаргадаг.", axis: "TF", first: true },
+      {
+        t: "Шийдвэр гаргахад бусдын мэдрэмжийг түрүүнд тавьдаг.",
+        axis: "TF",
+        first: false,
+      },
+      { t: "Зүгээр суух дургүй.", axis: "JP", first: true },
+      {
+        t: "Төлөвлөгөө уян хатан нээлттэй байхдаа сайхан.",
+        axis: "JP",
+        first: false,
+      },
+      {
+        t: "Сэтгэл хөдөлсөн үедээ бодолгүй ярьчихдаг.",
+        axis: "EI",
+        first: true,
+      },
+      {
+        t: "Сэтгэл хөдөлсөн ч эхлээд бодож дараа нь ярьдаг.",
+        axis: "EI",
+        first: false,
+      },
+      { t: "Туршлагадаа илүү итгэдэг.", axis: "SN", first: true },
+      { t: "Мөр хооронд унших нь надад амархан.", axis: "SN", first: false },
+      {
+        t: "Сэтгэгдэл илэн далангүй, шулуун байх нь дээр.",
+        axis: "TF",
+        first: true,
+      },
+      { t: "Зөв байххаас илүү эв нэгдэл чухал.", axis: "TF", first: false },
+      {
+        t: "To‑do жагсаалт хөтөлж цэгцтэй байх дуртай.",
+        axis: "JP",
+        first: true,
+      },
+      {
+        t: "Эцсийн хугацаа надад сануулга шиг л санагддаг.",
+        axis: "JP",
+        first: false,
+      },
+      { t: "Завгүй нийгмийн амьдралд дуртай.", axis: "EI", first: true },
+      {
+        t: "Олон хүнтэй ярьснаас илүү мэддэг хүнтэйгээ ярих нь тухтай.",
+        axis: "EI",
+        first: false,
+      },
+      {
+        t: "Бусдын анзаардаггүй зүйлсийг би анзаардаг.",
+        axis: "SN",
+        first: true,
+      },
+      { t: "Ирээдүйгээ том зургаар харах илүү.", axis: "SN", first: false },
+    ];
 
-const AXES = ["EI", "SN", "TF", "JP"];
+    const AXES = ["EI", "SN", "TF", "JP"];
 
-// Render quiz
-const quizList = document.getElementById("quizList");
-const quizBar = document.getElementById("quizBar");
-const qCounter = document.getElementById("qCounter");
-const backBtn = document.getElementById("backBtn");
-const clearBtn = document.getElementById("clearBtn");
-const finishBtn = document.getElementById("finishBtn");
+    // Render quiz
+    const quizList = document.getElementById("quizList");
+    const quizBar = document.getElementById("quizBar");
+    const qCounter = document.getElementById("qCounter");
+    const backBtn = document.getElementById("backBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const finishBtn = document.getElementById("finishBtn");
 
-let answers = JSON.parse(localStorage.getItem("mbti-answers") || "{}");
+    let answers = JSON.parse(localStorage.getItem("mbti-answers") || "{}");
 
-function renderQuiz() {
-  quizList.innerHTML = "";
-  QUESTIONS.forEach((q, i) => {
-    const li = document.createElement("li");
-    li.className = "card p-md reveal";
-    io.observe(li);
-    li.innerHTML = `
+    function renderQuiz() {
+      quizList.innerHTML = "";
+      QUESTIONS.forEach((q, i) => {
+        const li = document.createElement("li");
+        li.className = "card p-md reveal";
+        io.observe(li);
+        li.innerHTML = `
        <div class="question">${i + 1}. ${q.t}</div>
        <div class="muted" aria-hidden="true">Огт санал нийлэхгүй байна … Яахав дээ л … Ерөнхийдөө санал нийлж байна</div>
        <div class="scale" role="radiogroup" aria-label="${q.t}">
@@ -952,211 +1113,272 @@ function renderQuiz() {
            })
            .join("")}
        </div>`;
-    quizList.appendChild(li);
-  });
-  updateProgress();
-}
-
-function updateProgress() {
-  const answered = Object.keys(answers).length;
-  const pct = Math.round((100 * answered) / QUESTIONS.length);
-  quizBar.style.width = pct + "%";
-  qCounter.textContent = `${answered} / ${QUESTIONS.length}`;
-  finishBtn.disabled = answered < QUESTIONS.length;
-}
-
-quizList.addEventListener("change", (e) => {
-  const name = e.target.name;
-  if (!name) return;
-  const idx = Number(name.slice(1));
-  answers[idx] = Number(e.target.value);
-  localStorage.setItem("mbti-answers", JSON.stringify(answers));
-  updateProgress();
-});
-
-// Fancy keyboard navigation
-
-backBtn.addEventListener("click", () =>
-  window.scrollTo({ top: 0, behavior: "smooth" })
-);
-clearBtn.addEventListener("click", (e) => {
-  if (confirm("Бүх хариултыг цэвэрлэх үү?")) {
-    answers = {};
-    localStorage.removeItem("mbti-answers");
-    renderQuiz();
-  } else {
-    ripple(e.currentTarget);
-  }
-});
-finishBtn.addEventListener("click", (e) => {
-  ripple(e.currentTarget);
-  computeResults();
-});
-
-function computeResults() {
-  const pref = { EI: 0, SN: 0, TF: 0, JP: 0 };
-  QUESTIONS.forEach((q, i) => {
-    const v = answers[i];
-    if (!v) return;
-    const score = v - 4;
-    pref[q.axis] += q.first ? score : -score;
-  });
-  const pct = Object.fromEntries(
-    ["EI", "SN", "TF", "JP"].map((ax) => [
-      ax,
-      clamp(Math.round(((pref[ax] + 9) / 18) * 100), 0, 100),
-    ])
-  );
-  const code = `${pct.EI >= 50 ? "E" : "I"}${pct.SN >= 50 ? "S" : "N"}${
-    pct.TF >= 50 ? "T" : "F"
-  }${pct.JP >= 50 ? "J" : "P"}`;
-  showResults(code, pct);
-}
-
-// ===== RESULTS RENDER =====
-const resultsSec = document.getElementById("results");
-const resType = document.getElementById("resType");
-const resNick = document.getElementById("resNick");
-const resBars = document.getElementById("resBars");
-const resAbout = document.getElementById("resAbout");
-const resStrengths = document.getElementById("resStrengths");
-const resGrowth = document.getElementById("resGrowth");
-const aboutCode = document.getElementById("aboutCode");
-
-function barHTML(labelL, labelR, pctL) {
-  return `<div class="bar reveal"><span style="inset:0 ${
-    100 - pctL
-  }% 0 0"></span><div class="label"><span>${labelL}</span><span>${labelR}</span></div></div>`;
-}
-
-function showResults(code, pct) {
-  resType.textContent = code;
-  aboutCode.textContent = code;
-  const data = TYPES[code] || {
-    nick: "",
-    about: "",
-    strengths: [],
-    growth: [],
-  };
-  resNick.textContent = data.nick;
-  resAbout.textContent = data.about;
-  resStrengths.innerHTML = (data.strengths || [])
-    .map((s) => `<li class="reveal">${s}</li>`)
-    .join("");
-  resGrowth.innerHTML = (data.growth || [])
-    .map((s) => `<li class="reveal">${s}</li>`)
-    .join("");
-
-  resBars.innerHTML = "";
-  resBars.insertAdjacentHTML("beforeend", barHTML("E", "I", pct.EI));
-  resBars.insertAdjacentHTML("beforeend", barHTML("S", "N", pct.SN));
-  resBars.insertAdjacentHTML("beforeend", barHTML("T", "F", pct.TF));
-  resBars.insertAdjacentHTML("beforeend", barHTML("J", "P", pct.JP));
-  $$("#results .reveal").forEach((el) => io.observe(el));
-
-  resultsSec.style.display = "";
-  const payload = { code, pct, ts: Date.now() };
-  localStorage.setItem("mbti-result", JSON.stringify(payload));
-  renderLastResult();
-  scrollToId("results");
-  updateShareButtons(payload);
-}
-
-// ===== LAST RESULT CARD =====
-const lastResult = document.getElementById("lastResult");
-const lastResultNote = document.getElementById("lastResultNote");
-const lastType = document.getElementById("lastType");
-const lastNickname = document.getElementById("lastNickname");
-const lastBars = document.getElementById("lastBars");
-const restartBtn = document.getElementById("restartBtn");
-
-function renderLastResult() {
-  const saved = JSON.parse(localStorage.getItem("mbti-result") || "null");
-  if (!saved) {
-    lastResult.style.display = "none";
-    lastResultNote.style.display = "";
-    return;
-  }
-  lastResultNote.style.display = "none";
-  lastResult.style.display = "grid";
-  lastType.textContent = saved.code;
-  lastNickname.textContent = TYPES[saved.code]?.nick || "";
-  lastBars.innerHTML = "";
-  lastBars.insertAdjacentHTML("beforeend", barHTML("E", "I", saved.pct.EI));
-  lastBars.insertAdjacentHTML("beforeend", barHTML("S", "N", saved.pct.SN));
-  lastBars.insertAdjacentHTML("beforeend", barHTML("T", "F", saved.pct.TF));
-  lastBars.insertAdjacentHTML("beforeend", barHTML("J", "P", saved.pct.JP));
-  $$("#lastBars .reveal").forEach((el) => io.observe(el));
-}
-
-restartBtn.addEventListener("click", (e) => {
-  ripple(e.currentTarget);
-  answers = {};
-  localStorage.removeItem("mbti-answers");
-  renderQuiz();
-  scrollToId("quiz");
-});
-
-// ===== SHARING =====
-const shareBtn = document.getElementById("shareBtn");
-const copyLink = document.getElementById("copyLink");
-const shareResult = document.getElementById("shareResult");
-
-function buildResultURL(code, pct) {
-  const params = new URLSearchParams();
-  params.set("code", code);
-  params.set("ei", pct.EI);
-  params.set("sn", pct.SN);
-  params.set("tf", pct.TF);
-  params.set("jp", pct.JP);
-  return location.origin + location.pathname + "#" + params.toString();
-}
-
-function parseHash() {
-  if (!location.hash) return null;
-  const qs = location.hash.slice(1);
-  const p = new URLSearchParams(qs);
-  const code = p.get("code");
-  if (!code || !TYPES[code]) return null;
-  const pct = {
-    EI: +p.get("ei"),
-    SN: +p.get("sn"),
-    TF: +p.get("tf"),
-    JP: +p.get("jp"),
-  };
-  return { code, pct };
-}
-
-function updateShareButtons(payload) {
-  const url = buildResultURL(payload.code, payload.pct);
-  copyLink.onclick = async () => {
-    await navigator.clipboard.writeText(url);
-    alert("Холбоос хуулагдлаа!");
-  };
-  shareResult.onclick = async () => {
-    if (navigator.share) {
-      await navigator.share({
-        title: "Миний MBTI дүн",
-        text: `${payload.code} — ${TYPES[payload.code]?.nick}`,
-        url,
+        quizList.appendChild(li);
       });
-    } else {
-      await navigator.clipboard.writeText(url);
-      alert("Хуваалцах боломжгүй тул холбоос хууллаа!");
+      updateProgress();
     }
-  };
-  shareBtn.onclick = shareResult.onclick;
-}
 
-// On load
-window.addEventListener("load", () => {
-  renderQuiz();
-  renderLastResult();
-  const shared = parseHash();
-  if (shared) {
-    showResults(shared.code, shared.pct);
-  }
-});
+    function updateProgress() {
+      const answered = Object.keys(answers).length;
+      const pct = Math.round((100 * answered) / QUESTIONS.length);
+      quizBar.style.width = pct + "%";
+      qCounter.textContent = `${answered} / ${QUESTIONS.length}`;
+      finishBtn.disabled = answered < QUESTIONS.length;
+    }
 
-</script>
+    quizList.addEventListener("change", (e) => {
+      const name = e.target.name;
+      if (!name) return;
+      const idx = Number(name.slice(1));
+      answers[idx] = Number(e.target.value);
+      localStorage.setItem("mbti-answers", JSON.stringify(answers));
+      updateProgress();
+    });
+
+    // Fancy keyboard navigation
+
+    backBtn.addEventListener("click", () =>
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    );
+    clearBtn.addEventListener("click", (e) => {
+      if (confirm("Бүх хариултыг цэвэрлэх үү?")) {
+        answers = {};
+        localStorage.removeItem("mbti-answers");
+        renderQuiz();
+      } else {
+        ripple(e.currentTarget);
+      }
+    });
+    finishBtn.addEventListener("click", (e) => {
+      ripple(e.currentTarget);
+      computeResults();
+    });
+
+    function computeResults() {
+      const pref = { EI: 0, SN: 0, TF: 0, JP: 0 };
+      QUESTIONS.forEach((q, i) => {
+        const v = answers[i];
+        if (!v) return;
+        const score = v - 4;
+        pref[q.axis] += q.first ? score : -score;
+      });
+      const pct = Object.fromEntries(
+        ["EI", "SN", "TF", "JP"].map((ax) => [
+          ax,
+          clamp(Math.round(((pref[ax] + 9) / 18) * 100), 0, 100),
+        ])
+      );
+      const code = `${pct.EI >= 50 ? "E" : "I"}${pct.SN >= 50 ? "S" : "N"}${
+        pct.TF >= 50 ? "T" : "F"
+      }${pct.JP >= 50 ? "J" : "P"}`;
+      showResults(code, pct);
+    }
+
+    // ===== RESULTS RENDER =====
+    const resultsSec = document.getElementById("results");
+    const resType = document.getElementById("resType");
+    const resNick = document.getElementById("resNick");
+    const resBars = document.getElementById("resBars");
+    const resAbout = document.getElementById("resAbout");
+    const resStrengths = document.getElementById("resStrengths");
+    const resGrowth = document.getElementById("resGrowth");
+    const aboutCode = document.getElementById("aboutCode");
+
+    function barHTML(labelL, labelR, pctL) {
+      return `<div class="bar reveal"><span style="inset:0 ${
+        100 - pctL
+      }% 0 0"></span><div class="label"><span>${labelL}</span><span>${labelR}</span></div></div>`;
+    }
+
+    function showResults(code, pct) {
+      resType.textContent = code;
+      aboutCode.textContent = code;
+      const data = TYPES[code] || {
+        nick: "",
+        about: "",
+        strengths: [],
+        growth: [],
+      };
+      resNick.textContent = data.nick;
+      resAbout.textContent = data.about;
+      resStrengths.innerHTML = (data.strengths || [])
+        .map((s) => `<li class="reveal">${s}</li>`)
+        .join("");
+      resGrowth.innerHTML = (data.growth || [])
+        .map((s) => `<li class="reveal">${s}</li>`)
+        .join("");
+
+      resBars.innerHTML = "";
+      resBars.insertAdjacentHTML("beforeend", barHTML("E", "I", pct.EI));
+      resBars.insertAdjacentHTML("beforeend", barHTML("S", "N", pct.SN));
+      resBars.insertAdjacentHTML("beforeend", barHTML("T", "F", pct.TF));
+      resBars.insertAdjacentHTML("beforeend", barHTML("J", "P", pct.JP));
+      $$("#results .reveal").forEach((el) => io.observe(el));
+
+      resultsSec.style.display = "";
+      const payload = { code, pct, ts: Date.now() };
+      localStorage.setItem("mbti-result", JSON.stringify(payload));
+      renderLastResult();
+      scrollToId("results");
+      updateShareButtons(payload);
+    }
+
+    // ===== LAST RESULT CARD =====
+    const lastResult = document.getElementById("lastResult");
+    const lastResultNote = document.getElementById("lastResultNote");
+    const lastType = document.getElementById("lastType");
+    const lastNickname = document.getElementById("lastNickname");
+    const lastBars = document.getElementById("lastBars");
+    const restartBtn = document.getElementById("restartBtn");
+
+    function renderLastResult() {
+      const saved = JSON.parse(localStorage.getItem("mbti-result") || "null");
+      if (!saved) {
+        lastResult.style.display = "none";
+        lastResultNote.style.display = "";
+        return;
+      }
+      lastResultNote.style.display = "none";
+      lastResult.style.display = "grid";
+      lastType.textContent = saved.code;
+      lastNickname.textContent = TYPES[saved.code]?.nick || "";
+      lastBars.innerHTML = "";
+      lastBars.insertAdjacentHTML("beforeend", barHTML("E", "I", saved.pct.EI));
+      lastBars.insertAdjacentHTML("beforeend", barHTML("S", "N", saved.pct.SN));
+      lastBars.insertAdjacentHTML("beforeend", barHTML("T", "F", saved.pct.TF));
+      lastBars.insertAdjacentHTML("beforeend", barHTML("J", "P", saved.pct.JP));
+      $$("#lastBars .reveal").forEach((el) => io.observe(el));
+    }
+
+    restartBtn.addEventListener("click", (e) => {
+      ripple(e.currentTarget);
+      answers = {};
+      localStorage.removeItem("mbti-answers");
+      renderQuiz();
+      scrollToId("quiz");
+    });
+
+    // ===== SHARING =====
+    const shareBtn = document.getElementById("shareBtn");
+    const copyLink = document.getElementById("copyLink");
+    const shareResult = document.getElementById("shareResult");
+
+    function buildResultURL(code, pct) {
+      const params = new URLSearchParams();
+      params.set("code", code);
+      params.set("ei", pct.EI);
+      params.set("sn", pct.SN);
+      params.set("tf", pct.TF);
+      params.set("jp", pct.JP);
+      return location.origin + location.pathname + "#" + params.toString();
+    }
+
+    function parseHash() {
+      if (!location.hash) return null;
+      const qs = location.hash.slice(1);
+      const p = new URLSearchParams(qs);
+      const code = p.get("code");
+      if (!code || !TYPES[code]) return null;
+      const pct = {
+        EI: +p.get("ei"),
+        SN: +p.get("sn"),
+        TF: +p.get("tf"),
+        JP: +p.get("jp"),
+      };
+      return { code, pct };
+    }
+
+    function updateShareButtons(payload) {
+      const url = buildResultURL(payload.code, payload.pct);
+      copyLink.onclick = async () => {
+        await navigator.clipboard.writeText(url);
+        alert("Холбоос хуулагдлаа!");
+      };
+      shareResult.onclick = async () => {
+        if (navigator.share) {
+          await navigator.share({
+            title: "Миний MBTI дүн",
+            text: `${payload.code} — ${TYPES[payload.code]?.nick}`,
+            url,
+          });
+        } else {
+          await navigator.clipboard.writeText(url);
+          alert("Хуваалцах боломжгүй тул холбоос хууллаа!");
+        }
+      };
+      shareBtn.onclick = shareResult.onclick;
+    }
+
+    // On load
+    window.addEventListener("load", () => {
+      renderQuiz();
+      renderLastResult();
+      const shared = parseHash();
+      if (shared) {
+        showResults(shared.code, shared.pct);
+      }
+    });
+  </script>
 </html>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  /* Existing styles remain unchanged ... */
+
+  /* ===== ADDITIONAL RESPONSIVE STYLES ===== */
+  @media (max-width: 1200px) {
+    .container {
+      padding-inline: 1rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .nav {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .controls {
+      margin-top: 0.5rem;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+    .hero-grid {
+      grid-template-columns: 1fr !important;
+    }
+    .features {
+      grid-template-columns: 1fr !important;
+    }
+    .grid.cols-2,
+    .grid.cols-3,
+    .grid.cols-4 {
+      grid-template-columns: 1fr !important;
+    }
+    .quiz-controls {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .quiz-controls .right {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .title {
+      font-size: clamp(1.5rem, 5vw, 2rem);
+    }
+    .subtitle {
+      font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    }
+    .btn {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.9rem;
+    }
+    .scale {
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.25rem;
+    }
+    .pill {
+      padding: 0.45rem 0.35rem;
+      font-size: 0.7rem;
+    }
+  }
+</style>
